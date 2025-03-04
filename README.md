@@ -1,0 +1,1 @@
+Project to practice react-router-dom, where you can navigate through different parts and actions without reloading the html. It is possible to edit an event, delete an event and navigate through different links.
