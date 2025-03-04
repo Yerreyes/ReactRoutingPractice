@@ -5,11 +5,9 @@ import { useRouteError } from "react-router-dom";
 export default function ErrorPage() {
   const error = useRouteError();
 
-  console.log(error.status );
   let title = "An error ocurred";
   let message = "Something went wrong";
-
-  
+  console.log(error);
   if (error.status === 500) {
     message = JSON.parse(error.data).message;
   }

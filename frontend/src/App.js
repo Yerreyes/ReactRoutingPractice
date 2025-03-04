@@ -28,35 +28,60 @@ import {
 } from "react-router-dom";
 
 import HomePage from "./components/pages/HomePage";
-import EventsPage, {loader as eventLoader} from "./components/pages/Events";
+import EventsPage, { loader as eventsLoader } from "./components/pages/Events";
 import EditEventPage from "./components/pages/EditEventPage";
 import NewEventPage from "./components/pages/NewEventPage";
-import EventDetailPage from "./components/pages/EventDetailPage";
+import EventDetailPage, {
+  loader as eventDetailLoader,
+  action as deleteAction
+} from "./components/pages/EventDetailPage";
 import Layout from "./components/Layout";
 import EventsRoot from "./components/EventsRoot";
 import ErrorPage from "./components/pages/Error";
+import {action, action as manipulateEventAction} from './components/EventForm';
 
-const routes = createRoutesFromElements(
-  <>
-    {/**here I made a nested routes for the layout */}
-    <Route path="/" element={<Layout />} errorElement= { <ErrorPage />}>
-      <Route index element={<HomePage />} />
-      <Route path="events" element={<EventsRoot />}>
-        <Route
-          index
-          path=""
-          element={<EventsPage />}
-          loader = {eventLoader}
-        />
-        <Route path=":eventId" element={<EventDetailPage />} />
-        <Route path="new" element={<NewEventPage />} />
-        <Route path=":eventId/edit" element={<EditEventPage />} />
-      </Route>
-    </Route>
-  </>
-);
-
-const router = createBrowserRouter(routes);
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Layout />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        index: true,
+        element: <HomePage />,
+      },
+      {
+        path: "events",
+        element: <EventsRoot />,
+        children: [
+          {
+            index: true,
+            element: <EventsPage />,
+            loader: eventsLoader,
+          },
+          {
+            path: ":eventId",  // Esta es la ruta principal para un evento específico
+            loader: eventDetailLoader,  // Cargar los datos del evento
+            id : 'event-router',
+            children: [
+              {
+                index:true,
+                action: deleteAction,
+                element: <EventDetailPage />,  
+              },
+              {
+                path: "edit",  // Ruta hija para editar el evento
+                element: <EditEventPage />,  // Este es el componente que se debe renderizar
+                action: manipulateEventAction
+              },
+            ],
+          },
+          {path: 'new', element: <NewEventPage/>, action: manipulateEventAction}
+        ],
+      },
+    ],
+  },
+]);
 
 function App() {
   return <RouterProvider router={router} />;

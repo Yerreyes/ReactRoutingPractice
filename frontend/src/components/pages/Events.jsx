@@ -36,18 +36,19 @@ function EventsPage() {
 }
 
 export async function loader() {
-  const responde = await fetch("http://localhost:80 80/events");
-  if (responde.ok) {
+  const response = await fetch("http://localhost:8080/events");
+  if (response.ok) {
     /* its posible to return it like a object (array evenst), but the useLoaderData hook can get the reponse object like this above. 
     const restData = await responde.json();
     return restData.events;*/
-    return responde;
+    return response;
   }
-  if (!responde.ok)
-    throw new Response(
-      JSON.stringify({ message: "Could not fetch data", status: 500 }),
-      { status: 500 }
-    );
+  if (!response.ok) {
+    const error = new Error('Could not fetch the events');
+    error.status = 500;
+    error.data = JSON.stringify({ message: 'Failed to fetch data from the server' });
+    throw error;
+  }
 }
 
 export default EventsPage;

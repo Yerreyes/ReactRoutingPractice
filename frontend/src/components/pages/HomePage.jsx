@@ -1,5 +1,6 @@
+import PageContent from '../PageContent';
 function HomePage(){
-    return <h1>HomePage</h1>
+    return <PageContent title = {"Bienvenido"}><p>Holaa!!!!!</p></PageContent>
 }
 
 export default HomePage;
